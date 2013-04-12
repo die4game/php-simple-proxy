@@ -137,7 +137,7 @@
 
 // Change these configuration options if needed, see above descriptions for info.
 $enable_jsonp    = false;
-$enable_native   = false;
+$enable_native   = true;
 $valid_url_regex = '/.*/';
 
 // ############################################################################
@@ -189,6 +189,11 @@ if ( !$url ) {
   
   curl_close( $ch );
 }
+//
+$contents = preg_replace(array("/[\r\n]*/","/<\s*(script.*?>.*?script)\s*>/i","/(<[^>]*)\s(on\w+)(?=\s*=)(.*?>)/i"), array("","<!--$1-->","$1 NO$2$3"), $contents);
+for ($a = 0; $a < 6; $a++) {
+  $contents = preg_replace("/(<[^>]*)\s(on\w+)(?=\s*=)(.*?>)/i", "$1 NO$2$3", $contents);
+}
 
 // Split header text into an array.
 $header_text = preg_split( '/[\r\n]+/', $header );
@@ -205,7 +210,7 @@ if ( $_GET['mode'] == 'native' ) {
       header( $header );
     }
   }
-  
+
   print $contents;
   
 } else {
